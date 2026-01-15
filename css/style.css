@@ -1,0 +1,78 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* BASE */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f4f4f4;
+}
+
+/* HEADER */
+.header {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+
+  padding: 1rem 2rem;
+  background-color: #222;
+  color: #fff;
+}
+
+/* ESQUERDA */
+.header-left .logo {
+  font-size: 1.5rem;
+}
+
+/* CENTRO */
+.header-center .nav-list {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.header-center a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* DIREITA */
+.header-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cart-button {
+  background-color: yellow;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.cart-count {
+  background: black;
+  color: #fff;
+  padding: 0 6px;
+  border-radius: 50%;
+  margin-left: 6px;
+}
+
+/* MAIN */
+.main-content {
+  padding: 2rem;
+}
+
+/* PÁGINAS */
+.pagina {
+  display: none;
+}
+
+.pagina.ativa {
+  display: block;
+}

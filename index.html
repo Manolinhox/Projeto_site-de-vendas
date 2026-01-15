@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Site de Vendas</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- TOPO DO SITE -->
+  <header class="header">
+    
+    <!-- Topo esquerdo -->
+    <div class="header-left">
+      <h1 class="logo">Site de Vendas</h1>
+    </div>
+
+    <!-- Topo centro -->
+    <nav class="header-center">
+      <ul class="nav-list">
+        <li><a href="#" data-page="produtos">Produtos</a></li>
+      </ul>
+    </nav>
+
+    <!-- Topo direito -->
+    <div class="header-right">
+      <button class="cart-button">
+        🛒 Carrinho
+        <span class="cart-count">0</span>
+      </button>
+    </div>
+
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="main-content">
+
+    <section id="produtos" class="pagina ativa">
+      <!-- Produtos renderizados via JS - Àrea Dinâmica -->
+    </section>
+
+    <section id="carrinho" class="pagina">
+      <!-- Carrinho renderizado via JS - Àrea Dinâmica-->
+    </section>
+
+  </main>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
