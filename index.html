@@ -24,7 +24,7 @@
 
     <!-- Topo direito -->
     <div class="header-right">
-      <button class="cart-button">
+      <button class="cart-button" data-page="carrinho">
         🛒 Carrinho
         <span class="cart-count">0</span>
       </button>
@@ -35,16 +35,47 @@
   <!-- CONTEÚDO PRINCIPAL -->
   <main class="main-content">
 
+    <!-- Página Produtos -->
     <section id="produtos" class="pagina ativa">
-      <!-- Produtos renderizados via JS - Àrea Dinâmica -->
+      <h2>Produtos</h2>
+
+      <button class="btn" id="btnCadastrarProduto">Cadastrar Produto </button>
+
+      <div id="lista-produtos">
+        <!-- Produtos renderizados via JS -->
+      </div>
     </section>
 
+    <!-- Página Carrinho -->
     <section id="carrinho" class="pagina">
-      <!-- Carrinho renderizado via JS - Àrea Dinâmica-->
+      <h2>Carrinho</h2>
+      <div id="lista-carrinho">
+        <!-- Carrinho renderizado via JS -->
+      </div>
+    </section>
+
+    <!-- Página Cadastro de Produto -->
+    <section id="cadastro-produto" class="pagina">
+      <h2>Cadastrar Produto</h2>
+
+      <!-- FORMULÁRIO -->
+      <form id="form-produto">
+        <div class="form-group">
+          <label for="nomeProduto">Nome</label>
+          <input type="text" id="nomeProduto" required>
+        </div>
+
+        <div class="form-group">
+          <label for="precoProduto">Preço</label>
+          <input type="number" id="precoProduto" step="0.01" required>
+        </div>
+
+        <button type="submit">Cadastrar</button>
+      </form>
     </section>
 
   </main>
 
-  <script src="js/main.js"></script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
