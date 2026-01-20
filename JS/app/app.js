@@ -1,5 +1,6 @@
 //--------- Imports ------------
 import { Produto } from "../models/Produto.js";
+import { StorageService } from "../services/StorageService.js";
 
 // -------------- Globais -----------
 const links = document.querySelectorAll("[data-page]");
@@ -40,13 +41,17 @@ form.addEventListener("submit", (event) => {
   const produto = new Produto(nome, preco);
 
   if (produto.validar()) {
-    localStorage.salvarProduto(produto)//
-    console.log("Produto cadastrado:", produto);//
+    const produtos = StorageService.carregarProdutos();
+    produtos.push(produto);
+    StorageService.salvarProdutos(produtos);
+
+    console.log("Produto cadastrado:", produto);
 
     form.reset();
     mostrarPagina("produtos");
   }
 });
+
 
 //Gerar ID
 function GerarID(){

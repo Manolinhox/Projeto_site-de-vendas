@@ -1,4 +1,4 @@
-class StorageService {
+export class StorageService {
 
   static salvarProdutos(produtos) {
     localStorage.setItem("produtos", JSON.stringify(produtos));
@@ -16,5 +16,3 @@ class StorageService {
     return JSON.parse(localStorage.getItem("carrinho")) || [];
   }
 }
-
-  
