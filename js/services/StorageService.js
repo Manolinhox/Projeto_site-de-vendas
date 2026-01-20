@@ -1,7 +1,7 @@
 export class StorageService {
 
-  static salvarProduto(produto) {
-    localStorage.setItem("produto", JSON.stringify(produto));
+  static salvarProduto(id, produto) {
+    localStorage.setItem(id, JSON.stringify(produto));
   }
 
   static carregarProduto() {

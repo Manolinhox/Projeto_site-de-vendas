@@ -41,7 +41,7 @@ form.addEventListener("submit", (event) => {
   const produto = new Produto(GerarID(), nome, preco);
 
   if (produto.validar()) {
-    StorageService.salvarProduto(produto);//
+    StorageService.salvarProduto(produto.getId(), produto);//
     console.log("Produto cadastrado:", produto);//
 
     form.reset();
