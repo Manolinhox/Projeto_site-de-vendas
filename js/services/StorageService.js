@@ -1,11 +1,11 @@
 export class StorageService {
 
-  static salvarProduto(id, produto) {
-    localStorage.setItem(id, JSON.stringify(produto));
+  static salvarProdutos(produtos) {
+    localStorage.setItem("produtos", JSON.stringify(produtos));
   }
 
-  static carregarProduto() {
-    return JSON.parse(localStorage.getItem("produto")) || [];
+  static carregarProdutos() {
+    return JSON.parse(localStorage.getItem("produtos")) || [];
   }
 
   static salvarCarrinho(carrinho) {
