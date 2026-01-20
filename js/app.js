@@ -1,5 +1,6 @@
 //--------- Imports ------------
-import { Produto } from "../models/Produto.js";
+import { Produto } from "./models/Produto.js";
+import { StorageService } from "./services/StorageService.js";
 
 // -------------- Globais -----------
 const links = document.querySelectorAll("[data-page]");
@@ -37,10 +38,10 @@ form.addEventListener("submit", (event) => {
   const nome = document.getElementById("nomeProduto").value;
   const preco = parseFloat(document.getElementById("precoProduto").value);
 
-  const produto = new Produto(nome, preco);
+  const produto = new Produto(GerarID(), nome, preco);
 
   if (produto.validar()) {
-    localStorage.salvarProduto(produto)//
+    StorageService.salvarProduto(produto);//
     console.log("Produto cadastrado:", produto);//
 
     form.reset();
