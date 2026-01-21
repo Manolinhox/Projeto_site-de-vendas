@@ -118,3 +118,24 @@ button {
   padding: 0.4rem;
   cursor: pointer;
 }
+
+/* FEEDBACK VISUAL */
+.feedback {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: bold;
+  z-index: 1000;
+}
+
+.feedback.sucesso {
+  background-color: #28a745;
+}
+
+.feedback.erro {
+  background-color: #dc3545;
+}
+

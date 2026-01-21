@@ -32,4 +32,14 @@ export class UIService {
       container.appendChild(card);
     });
   }
+
+  static mostrarFeedback(mensagem, tipo = "sucesso") { 
+    const feedback = document.createElement("div");
+    feedback.className = `feedback ${tipo}`;
+    feedback.innerText = mensagem;
+
+    document.body.appendChild(feedback);
+
+    setTimeout(() => feedback.remove(), 2500);
+  }
 }

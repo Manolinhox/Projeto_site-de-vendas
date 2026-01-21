@@ -1,18 +1,38 @@
 export class StorageService {
 
-  static salvarProdutos(produtos) {
-    localStorage.setItem("produtos", JSON.stringify(produtos));
+  static salvarProduto(produto) {
+    const ids = this.carregarIds();
+
+    if (!ids.includes(produto.id)) {
+      ids.push(produto.id);
+      localStorage.setItem("produtos_ids", JSON.stringify(ids));
+    }
+
+    localStorage.setItem(
+      `produto_${produto.id}`,
+      JSON.stringify(produto)
+    );
   }
 
   static carregarProdutos() {
-    return JSON.parse(localStorage.getItem("produtos")) || [];
+    const ids = this.carregarIds();
+
+    return ids
+      .map(id => {
+        const dados = localStorage.getItem(`produto_${id}`);
+        return dados ? JSON.parse(dados) : null;
+      })
+      .filter(p => p !== null); // GARANTE ARRAY
   }
 
-  static salvarCarrinho(carrinho) {
-    localStorage.setItem("carrinho", JSON.stringify(carrinho));
+  static removerProduto(id) {
+    localStorage.removeItem(`produto_${id}`);
+
+    const ids = this.carregarIds().filter(pid => pid !== id);
+    localStorage.setItem("produtos_ids", JSON.stringify(ids));
   }
 
-  static carregarCarrinho() {
-    return JSON.parse(localStorage.getItem("carrinho")) || [];
+  static carregarIds() {
+    return JSON.parse(localStorage.getItem("produtos_ids")) || [];
   }
 }
