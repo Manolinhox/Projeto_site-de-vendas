@@ -49,8 +49,23 @@
     <!-- Página Carrinho -->
     <section id="carrinho" class="pagina">
       <h2>Carrinho</h2>
-      <div id="lista-carrinho">
-        <!-- Carrinho renderizado via JS -->
+      <div class="carrinho-layout">
+        
+        <!-- Lista de itens (centro) -->
+        <div class="carrinho-itens" id="lista-carrinho"> <!-- Itens do carrinho renderizados via JS --> </div>
+
+        <!-- Resumo (direita) -->
+        <aside class="carrinho-resumo">
+          <h3>Resumo</h3>
+
+          <p>Total de itens: <span id="qtd-itens">0</span></p>
+          <p>Total: <strong>R$ <span id="total-carrinho">0,00</span></strong></p>
+
+          <button class="btn-finalizar">
+            Finalizar Compra
+          </button>
+        </aside>
+
       </div>
     </section>
 
