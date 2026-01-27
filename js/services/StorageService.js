@@ -1,5 +1,9 @@
 export class StorageService {
 
+  /* ======================
+     PRODUTOS (CATÁLOGO)
+     ====================== */
+
   static salvarProduto(produto) {
     const ids = this.carregarIds();
 
@@ -22,7 +26,7 @@ export class StorageService {
         const dados = localStorage.getItem(`produto_${id}`);
         return dados ? JSON.parse(dados) : null;
       })
-      .filter(p => p !== null); // GARANTE ARRAY
+      .filter(p => p !== null);
   }
 
   static removerProduto(id) {
@@ -34,5 +38,26 @@ export class StorageService {
 
   static carregarIds() {
     return JSON.parse(localStorage.getItem("produtos_ids")) || [];
+  }
+
+  /* ======================
+     CARRINHO
+     ====================== */
+
+  static salvarCarrinho(itens) {
+    localStorage.setItem(
+      "carrinho",
+      JSON.stringify(itens)
+    );
+  }
+
+  static carregarCarrinho() {
+    return JSON.parse(
+      localStorage.getItem("carrinho")
+    ) || [];
+  }
+
+  static limparCarrinho() {
+    localStorage.removeItem("carrinho");
   }
 }
