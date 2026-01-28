@@ -38,8 +38,20 @@
     <!-- Página Produtos -->
     <section id="produtos" class="pagina ativa">
       <h2>Produtos</h2>
+      
+      <div class="produtos-controles">
+      <input 
+        type="text" 
+        id="busca-produto" 
+        placeholder="Buscar produto pelo nome..."
+        >
+      </div>
 
-      <button class="btn" id="btnCadastrarProduto">Cadastrar Produto </button>
+    <button aclass="btn" id="btnCadastrarProduto">
+    Cadastrar Produto
+  </button>
+
+  <div id="lista-produtos"></div>
 
       <div id="lista-produtos">
         <!-- Produtos renderizados via JS -->

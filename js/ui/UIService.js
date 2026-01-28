@@ -18,7 +18,10 @@ export class UIService {
 
       // ---- FEEDBACK VISUAL DE ESTOQUE ----
       let classeEstoque = "estoque";
-      let textoEstoque = `Estoque: ${produto.estoque ?? "N/A"}`;
+      let textoEstoque = produto.estoque != null
+      ? `Estoque: ${produto.estoque}`
+      : "Estoque disponível";
+
 
       if (produto.estoque === 0) {
         classeEstoque += " estoque-esgotado";
@@ -27,8 +30,10 @@ export class UIService {
         classeEstoque += " estoque-baixo";
       }
 
+      const estoque = produto.estoque ?? Infinity;
+
       const botaoCarrinhoDesabilitado =
-        produto.estoque === 0 ? "disabled" : "";
+      estoque === 0 ? "disabled" : "";
 
       card.innerHTML = `
         <h3>${produto.nome}</h3>Finalizar

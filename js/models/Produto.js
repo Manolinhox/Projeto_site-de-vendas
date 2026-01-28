@@ -3,7 +3,7 @@ export class Produto {
     this.id = id;
     this.nome = nome;
     this.preco = preco;
-    this.estoque = 0;
+    this.estoque = 10; // Cada produto tem por definição 10 no estoque (para testes)
   }
 
   validar() {
