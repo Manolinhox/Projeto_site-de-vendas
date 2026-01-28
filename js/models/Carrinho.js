@@ -70,6 +70,35 @@ export class Carrinho {
     this.itens = [];
     StorageService.limparCarrinho(); // 🔹 ADICIONADO
   }
+   constructor(produtos) {
+    this.itens = [];
+    this.produtos = produtos;
+  }
+
+  finalizarCompra() {
+    if (this.itens.length === 0) {
+      throw new Error("Carrinho vazio");
+    }
+
+    this.itens.forEach(item => {
+      const produto = this.produtos.find(
+        p => p.id === item.produto.id
+      );
+
+      produto.estoque -= item.quantidade;
+    });
+
+    StorageService.salvarProdutos(this.produtos);
+    this.itens = [];
+    StorageService.salvarCarrinho(this.itens);
+  }
+
+  calcularTotal() {
+    return this.itens.reduce(
+      (total, item) => total + item.calcularSubtotal(),
+      0
+    );
+  }
 }
 
 
