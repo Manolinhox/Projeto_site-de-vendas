@@ -3,7 +3,6 @@ import { Produto } from "./models/Produto.js";
 import { Carrinho } from "./models/Carrinho.js";
 import { StorageService } from "./services/StorageService.js";
 import { UIService } from "./ui/UIService.js";
-import { Carrinho } from "./models/Carrinho.js";
 
 // -------------- DOM -----------
 const links = document.querySelectorAll("[data-page]");
