@@ -8,7 +8,7 @@ export class UIService {
     container.innerHTML = "";
 
     if (produtos.length === 0) {
-      lista.innerHTML = "<p>Nenhum produto encontrado.</p>";
+      container.innerHTML = "<p>Nenhum produto cadastrado.</p>";
       return;
     }
 
@@ -37,7 +37,7 @@ export class UIService {
         </div>
       `;
 
-      lista.appendChild(item);
+      container.appendChild(card);
     });
   }
 

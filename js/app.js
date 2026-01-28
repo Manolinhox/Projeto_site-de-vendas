@@ -136,23 +136,8 @@ form?.addEventListener("submit", (event) => {
     UIService.mostrarFeedback("Produto cadastrado!");
   }
 
-//Buscar
-function buscarProdutos() {
-  const termo = State.termoBusca.toLowerCase();
-
-  const produtosFiltrados = State.produtos.filter(produto =>
-    produto.nome.toLowerCase().includes(termo)
-  );
-
-  UIService.renderizarProdutos(produtosFiltrados);
-}
-
-//evento de busca
-const campoBusca = document.getElementById("campo-busca");
-
-campoBusca.addEventListener("input", (e) => {
-  State.termoBusca = e.target.value;
-  buscarProdutos();
+  form.reset();
+  mostrarPagina("produtos");
 });
 
 // ================= BUSCA =================
