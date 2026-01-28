@@ -8,28 +8,29 @@ const links = document.querySelectorAll("[data-page]");
 const paginas = document.querySelectorAll(".pagina");
 const form = document.getElementById("form-produto");
 const btnCadastrarProduto = document.getElementById("btnCadastrarProduto");
+const inputBusca = document.getElementById("busca-produto"); // <-- ADICIONADO
 
-// ------- Ações ------
+// -------------- Estado -----------
 let produtoEmEdicao = null;
+let estadoProdutos = []; // <-- ADICIONADO (estado central)
 
+// ================= CARRINHO (MODELO BÁSICO) =================
+let carrinho = [];
+
+// ================= AÇÕES GLOBAIS =================
 document.addEventListener("click", (event) => {
   const botao = event.target;
+  const action = botao.dataset.action;
   const id = botao.dataset.id;
 
-  if (!id) return;
+  if (!action || !id) return;
 
-  // ----- EDITAR ------
-  if (botao.dataset.action == "editar") {
-    const produtos = StorageService.carregarProdutos();
-    const dadosProduto = produtos.find(p => p.id == id);
-    
-    if (!dadosProduto) return;
+  // ---------- EDITAR ----------
+  if (action === "editar") {
+    const dados = estadoProdutos.find(p => p.id === id);
+    if (!dados) return;
 
-    produtoEmEdicao = new Produto(
-      dadosProduto.id,
-      dadosProduto.nome,
-      dadosProduto.preco
-    );
+    produtoEmEdicao = new Produto(dados.id, dados.nome, dados.preco);
 
     document.getElementById("nomeProduto").value = produtoEmEdicao.nome;
     document.getElementById("precoProduto").value = produtoEmEdicao.preco;
@@ -37,28 +38,40 @@ document.addEventListener("click", (event) => {
     mostrarPagina("cadastro-produto");
   }
 
-  else if (botao.dataset.action == "excluir"){
+  // ---------- EXCLUIR ----------
+  if (action === "excluir") {
     StorageService.removerProduto(id);
-
-    const produtosAtualizados = StorageService.carregarProdutos();
-    UIService.renderizarProdutos(produtosAtualizados);
+    atualizarEstadoProdutos();
+    UIService.mostrarFeedback("Produto removido!");
   }
 
+  // ---------- CARRINHO ----------
+  if (action === "carrinho") {
+    const produto = estadoProdutos.find(p => p.id === id);
+    if (!produto) return;
+
+    adicionarAoCarrinho(produto);
+  }
+
+  if (action === "aumentar") aumentarQuantidade(id);
+  if (action === "diminuir") diminuirQuantidade(id);
 });
 
-
-// -------------- Navegação -----------
+// ================= NAVEGAÇÃO =================
 function mostrarPagina(id) {
   paginas.forEach(p => p.classList.remove("ativa"));
 
   const pagina = document.getElementById(id);
-  if (pagina) {
-    pagina.classList.add("ativa");
+  if (!pagina) return;
 
-    if (id === "produtos") {
-      const produtos = StorageService.carregarProdutos();
-      UIService.renderizarProdutos(produtos);
-    }
+  pagina.classList.add("ativa");
+
+  if (id === "produtos") {
+    atualizarEstadoProdutos();
+  }
+
+  if (id === "carrinho") {
+    atualizarCarrinhoUI();
   }
 }
 
@@ -75,34 +88,34 @@ btnCadastrarProduto.addEventListener("click", () => {
   mostrarPagina("cadastro-produto");
 });
 
-// -------- Formulário --------
+// ================= FORMULÁRIO =================
 form.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const nome = document.getElementById("nomeProduto").value;
   const preco = parseFloat(document.getElementById("precoProduto").value);
 
-  const produto = new Produto(GerarID(), nome, preco);
-
-  if (produtoEmEdicao) { // Se for um produto já existente que será editado
+  // ----- EDIÇÃO -----
+  if (produtoEmEdicao) {
     produtoEmEdicao.nome = nome;
     produtoEmEdicao.preco = preco;
-    
+
     if (!produtoEmEdicao.validar()) return;
 
     StorageService.salvarProduto(produtoEmEdicao);
-    UIService.mostrarFeedback("Produto salvo com Sucesso!");
+    UIService.mostrarFeedback("Produto atualizado!");
 
-    produtoEmEdicao = null; // limpa o produto
+    produtoEmEdicao = null;
   }
 
-  else { // Senão, um novo produto é criado
+  // ----- NOVO PRODUTO -----
+  else {
     const produto = new Produto(GerarID(), nome, preco);
 
     if (!produto.validar()) return;
 
     StorageService.salvarProduto(produto);
-    UIService.mostrarFeedback("Produto salvo com Sucesso!");
+    UIService.mostrarFeedback("Produto cadastrado!");
   }
 
 //Buscar
@@ -124,15 +137,63 @@ campoBusca.addEventListener("input", (e) => {
   buscarProdutos();
 });
 
+// ================= BUSCA DE PRODUTOS =================
+inputBusca?.addEventListener("input", () => { 
+  const termo = inputBusca.value.toLowerCase();
 
-//edição
+  const filtrados = estadoProdutos.filter(produto =>
+    produto.nome.toLowerCase().includes(termo)
+  );
 
+  UIService.renderizarProdutos(filtrados);
+});
 
+// ================= ESTADO =================
+function atualizarEstadoProdutos() {
+  estadoProdutos = StorageService.carregarProdutos();
+  UIService.renderizarProdutos(estadoProdutos);
+}
 
+// ================= FUNÇÕES DE CARRINHO =================
+function adicionarAoCarrinho(produto) {
+  const item = carrinho.find(p => p.id === produto.id);
 
+  if (item) {
+    item.quantidade++;
+  } else {
+    carrinho.push({ ...produto, quantidade: 1 });
+  }
 
+  atualizarCarrinhoUI();
+}
 
-// Util
+function aumentarQuantidade(id) {
+  const item = carrinho.find(p => p.id === id);
+  if (!item) return;
+
+  item.quantidade++;
+  atualizarCarrinhoUI();
+}
+
+function diminuirQuantidade(id) {
+  const item = carrinho.find(p => p.id === id);
+  if (!item) return;
+
+  if (item.quantidade > 1) {
+    item.quantidade--;
+  } else {
+    carrinho = carrinho.filter(p => p.id !== id);
+  }
+
+  atualizarCarrinhoUI();
+}
+
+function atualizarCarrinhoUI() {
+  UIService.renderizarCarrinho(carrinho);
+  UIService.renderizarResumo(carrinho);
+}
+
+// ================= UTIL =================
 function GerarID() {
   return Math.random().toString(36).slice(2, 11);
-};
+}

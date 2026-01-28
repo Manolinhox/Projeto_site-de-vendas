@@ -139,3 +139,79 @@ button {
   background-color: #dc3545;
 }
 
+
+/* CARRINHO */
+.carrinho-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* centro + direita */
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/* Itens do carrinho (centro) */
+.carrinho-itens {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Card do item */
+.carrinho-item {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 6px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.carrinho-item h4 {
+  margin-bottom: 0.5rem;
+}
+
+.carrinho-item .preco {
+  font-weight: bold;
+}
+
+/* Controles */
+.carrinho-controles {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.carrinho-controles button {
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+
+/* Resumo (direita) */
+.carrinho-resumo {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 6px;
+  position: sticky;
+  top: 2rem;
+}
+
+.carrinho-resumo h3 {
+  margin-bottom: 1rem;
+}
+
+.carrinho-resumo p {
+  margin-bottom: 0.5rem;
+}
+
+.btn-finalizar {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
