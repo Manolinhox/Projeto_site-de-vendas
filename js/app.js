@@ -1,22 +1,32 @@
-//--------- Imports ------------
+// --------- Imports ------------
 import { Produto } from "./models/Produto.js";
+import { Carrinho } from "./models/Carrinho.js";
 import { StorageService } from "./services/StorageService.js";
 import { UIService } from "./ui/UIService.js";
 import { Carrinho } from "./models/Carrinho.js";
 
-// -------------- Globais -----------
+// -------------- DOM -----------
 const links = document.querySelectorAll("[data-page]");
 const paginas = document.querySelectorAll(".pagina");
 const form = document.getElementById("form-produto");
 const btnCadastrarProduto = document.getElementById("btnCadastrarProduto");
-const inputBusca = document.getElementById("busca-produto"); // <-- ADICIONADO
+const inputBusca = document.getElementById("busca-produto");
+const btnFinalizarCompra = document.querySelector(".btn-finalizar");
 
 // -------------- Estado -----------
 let produtoEmEdicao = null;
-let estadoProdutos = []; // <-- ADICIONADO (estado central)
+let estadoProdutos = [];
+const carrinho = new Carrinho();
 
-// ================= CARRINHO (MODELO BÁSICO) =================
-let carrinho = [];
+// ================= INICIALIZAÇÃO =================
+document.addEventListener("DOMContentLoaded", () => {
+  atualizarEstadoProdutos();
+
+  const itensSalvos = StorageService.carregarCarrinho();
+  carrinho.setItens(itensSalvos);
+
+  atualizarCarrinhoUI();
+});
 
 // ================= AÇÕES GLOBAIS =================
 document.addEventListener("click", (event) => {
@@ -31,7 +41,12 @@ document.addEventListener("click", (event) => {
     const dados = estadoProdutos.find(p => p.id === id);
     if (!dados) return;
 
-    produtoEmEdicao = new Produto(dados.id, dados.nome, dados.preco);
+    produtoEmEdicao = new Produto(
+      dados.id,
+      dados.nome,
+      dados.preco,
+      dados.estoque
+    );
 
     document.getElementById("nomeProduto").value = produtoEmEdicao.nome;
     document.getElementById("precoProduto").value = produtoEmEdicao.preco;
@@ -46,16 +61,27 @@ document.addEventListener("click", (event) => {
     UIService.mostrarFeedback("Produto removido!");
   }
 
-  // ---------- CARRINHO ----------
+  // ---------- ADICIONAR AO CARRINHO ----------
   if (action === "carrinho") {
     const produto = estadoProdutos.find(p => p.id === id);
     if (!produto) return;
 
-    adicionarAoCarrinho(produto);
+    carrinho.adicionarProduto(produto);
+    StorageService.salvarCarrinho(carrinho.getItens());
+    atualizarCarrinhoUI();
   }
 
-  if (action === "aumentar") aumentarQuantidade(id);
-  if (action === "diminuir") diminuirQuantidade(id);
+  if (action === "aumentar") {
+    carrinho.aumentar(id);
+    StorageService.salvarCarrinho(carrinho.getItens());
+    atualizarCarrinhoUI();
+  }
+
+  if (action === "diminuir") {
+    carrinho.diminuir(id);
+    StorageService.salvarCarrinho(carrinho.getItens());
+    atualizarCarrinhoUI();
+  }
 });
 
 // ================= NAVEGAÇÃO =================
@@ -67,16 +93,10 @@ function mostrarPagina(id) {
 
   pagina.classList.add("ativa");
 
-  if (id === "produtos") {
-    atualizarEstadoProdutos();
-  }
-
-  if (id === "carrinho") {
-    atualizarCarrinhoUI();
-  }
+  if (id === "produtos") atualizarEstadoProdutos();
+  if (id === "carrinho") atualizarCarrinhoUI();
 }
 
-// Menu
 links.forEach(link => {
   link.addEventListener("click", (e) => {
     e.preventDefault();
@@ -84,8 +104,7 @@ links.forEach(link => {
   });
 });
 
-// Botão cadastrar
-btnCadastrarProduto.addEventListener("click", () => {
+btnCadastrarProduto?.addEventListener("click", () => {
   mostrarPagina("cadastro-produto");
 });
 // -------- Formulário --------
@@ -104,13 +123,12 @@ form.addEventListener("submit", (event) => {
 
     StorageService.salvarProduto(produtoEmEdicao);
     UIService.mostrarFeedback("Produto atualizado!");
-
     produtoEmEdicao = null;
   }
 
   // ----- NOVO PRODUTO -----
   else {
-    const produto = new Produto(GerarID(), nome, preco);
+    const produto = new Produto(GerarID(), nome, preco, 10);
 
     if (!produto.validar()) return;
 
@@ -122,27 +140,8 @@ form.addEventListener("submit", (event) => {
   mostrarPagina("produtos");
 });
 
-//Buscar
-function buscarProdutos() {
-  const termo = State.termoBusca.toLowerCase();
-
-  const produtosFiltrados = State.produtos.filter(produto =>
-    produto.nome.toLowerCase().includes(termo)
-  );
-
-  UIService.renderizarProdutos(produtosFiltrados);
-}
-
-//evento de busca
-const campoBusca = document.getElementById("campo-busca");
-
-campoBusca.addEventListener("input", (e) => {
-  State.termoBusca = e.target.value;
-  buscarProdutos();
-});
-
-// ================= BUSCA DE PRODUTOS =================
-inputBusca?.addEventListener("input", () => { 
+// ================= BUSCA =================
+inputBusca?.addEventListener("input", () => {
   const termo = inputBusca.value.toLowerCase();
 
   const filtrados = estadoProdutos.filter(produto =>
@@ -152,49 +151,53 @@ inputBusca?.addEventListener("input", () => {
   UIService.renderizarProdutos(filtrados);
 });
 
+// ================= FINALIZAR COMPRA =================
+btnFinalizarCompra?.addEventListener("click", finalizarCompra);
+
+function finalizarCompra() {
+  const itensCarrinho = carrinho.getItens();
+  const produtos = StorageService.carregarProdutos();
+
+  if (itensCarrinho.length === 0) {
+    UIService.mostrarFeedback("Carrinho vazio!");
+    return;
+  }
+
+  itensCarrinho.forEach(item => {
+    const produto = produtos.find(p => p.id === item.id);
+    if (!produto) return;
+
+    if (produto.estoque < item.quantidade) {
+      UIService.mostrarFeedback(
+        `Estoque insuficiente para ${produto.nome}`
+      );
+      throw new Error("Estoque insuficiente");
+    }
+
+    produto.estoque -= item.quantidade;
+    StorageService.salvarProduto(produto);
+  });
+
+  carrinho.limpar();
+  StorageService.limparCarrinho();
+
+  atualizarEstadoProdutos();
+  atualizarCarrinhoUI();
+
+  UIService.mostrarFeedback("Compra finalizada com sucesso!");
+}
+
 // ================= ESTADO =================
 function atualizarEstadoProdutos() {
   estadoProdutos = StorageService.carregarProdutos();
   UIService.renderizarProdutos(estadoProdutos);
 }
 
-// ================= FUNÇÕES DE CARRINHO =================
-function adicionarAoCarrinho(produto) {
-  const item = carrinho.find(p => p.id === produto.id);
-
-  if (item) {
-    item.quantidade++;
-  } else {
-    carrinho.push({ ...produto, quantidade: 1 });
-  }
-
-  atualizarCarrinhoUI();
-}
-
-function aumentarQuantidade(id) {
-  const item = carrinho.find(p => p.id === id);
-  if (!item) return;
-
-  item.quantidade++;
-  atualizarCarrinhoUI();
-}
-
-function diminuirQuantidade(id) {
-  const item = carrinho.find(p => p.id === id);
-  if (!item) return;
-
-  if (item.quantidade > 1) {
-    item.quantidade--;
-  } else {
-    carrinho = carrinho.filter(p => p.id !== id);
-  }
-
-  atualizarCarrinhoUI();
-}
-
+// ================= UI DO CARRINHO =================
 function atualizarCarrinhoUI() {
-  UIService.renderizarCarrinho(carrinho);
-  UIService.renderizarResumo(carrinho);
+  const itens = carrinho.getItens();
+  UIService.renderizarCarrinho(itens);
+  UIService.renderizarResumo(itens);
 }
   
 // ================= UTIL =================

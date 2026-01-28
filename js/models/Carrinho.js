@@ -1,105 +1,87 @@
-import { ItemCarrinho } from "./ItemCarrinho.js";
-import { StorageService } from "../services/StorageService.js"; // 🔹 ADICIONADO
-
 export class Carrinho {
   constructor() {
-    this.itens = [];
-    this.carregarDoStorage(); // 🔹 ADICIONADO
+    this.itens = []; 
+    // [{ produto, quantidade }]
   }
 
-  // 🔹 ADICIONADO
-  carregarDoStorage() {
-    const itensSalvos = StorageService.carregarCarrinho();
+  // ---------- CONSULTAS ----------
+  getItens() {
+    return this.itens;
+  }
 
-    this.itens = itensSalvos.map(item =>
-      new ItemCarrinho(item.produto, item.quantidade)
+  getItemPorId(id) {
+    return this.itens.find(item => item.produto.id === id);
+  }
+
+  getTotalItens() {
+    return this.itens.reduce(
+      (total, item) => total + item.quantidade,
+      0
     );
   }
 
-  // 🔹 ADICIONADO
-  salvar() {
-    StorageService.salvarCarrinho(this.itens);
+  getTotalValor() {
+    return this.itens.reduce(
+      (total, item) => total + item.produto.preco * item.quantidade,
+      0
+    );
   }
 
-  adicionarItem(produto) {
-     console.log("adicionarItem chamado", produto);
-    const item = this.itens.find(
-      i => i.produto.id === produto.id
-    );
+  // ---------- AÇÕES ----------
+  setItens(itens) {
+    this.itens = itens;
+  }
+
+  adicionarProduto(produto) {
+    const item = this.getItemPorId(produto.id);
+
+    const estoqueDisponivel =
+      produto.estoque == null ? Infinity : produto.estoque;
 
     if (item) {
-      if (item.quantidade < produto.estoque) {
+      if (item.quantidade < estoqueDisponivel) {
         item.quantidade++;
       }
     } else {
-      this.itens.push(new ItemCarrinho(produto));
+      if (estoqueDisponivel > 0) {
+        this.itens.push({
+          produto,
+          quantidade: 1
+        });
+      }
     }
-
-    this.salvar(); // 🔹 ADICIONADO
   }
 
-  removerItem(produtoId) {
-    this.itens = this.itens.filter(
-      item => item.produto.id !== produtoId
-    );
-
-    this.salvar(); // 🔹 ADICIONADO
-  }
-
-  atualizarQuantidade(produtoId, quantidade) {
-    const item = this.itens.find(
-      item => item.produto.id === produtoId
-    );
-
+  aumentar(id) {
+    const item = this.getItemPorId(id);
     if (!item) return;
 
-    if (quantidade >= 1 && quantidade <= item.produto.estoque) {
-      item.quantidade = quantidade;
-      this.salvar(); // 🔹 ADICIONADO
+    const estoqueDisponivel =
+      item.produto.estoque == null ? Infinity : item.produto.estoque;
+
+    if (item.quantidade < estoqueDisponivel) {
+      item.quantidade++;
     }
   }
 
-  calcularTotal() {
-    return this.itens.reduce(
-      (total, item) => total + item.calcularSubtotal(),
-      0
+  diminuir(id) {
+    const item = this.getItemPorId(id);
+    if (!item) return;
+
+    item.quantidade--;
+
+    if (item.quantidade <= 0) {
+      this.remover(id);
+    }
+  }
+
+  remover(id) {
+    this.itens = this.itens.filter(
+      item => item.produto.id !== id
     );
   }
 
   limpar() {
     this.itens = [];
-    StorageService.limparCarrinho(); // 🔹 ADICIONADO
-  }
-   constructor(produtos) {
-    this.itens = [];
-    this.produtos = produtos;
-  }
-
-  finalizarCompra() {
-    if (this.itens.length === 0) {
-      throw new Error("Carrinho vazio");
-    }
-
-    this.itens.forEach(item => {
-      const produto = this.produtos.find(
-        p => p.id === item.produto.id
-      );
-
-      produto.estoque -= item.quantidade;
-    });
-
-    StorageService.salvarProdutos(this.produtos);
-    this.itens = [];
-    StorageService.salvarCarrinho(this.itens);
-  }
-
-  calcularTotal() {
-    return this.itens.reduce(
-      (total, item) => total + item.calcularSubtotal(),
-      0
-    );
   }
 }
-
-
-

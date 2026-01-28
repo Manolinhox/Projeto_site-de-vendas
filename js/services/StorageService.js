@@ -40,21 +40,13 @@ export class StorageService {
     return JSON.parse(localStorage.getItem("produtos_ids")) || [];
   }
 
-  /* ======================
-     CARRINHO
-     ====================== */
-
-  static salvarCarrinho(itens) {
-    localStorage.setItem(
-      "carrinho",
-      JSON.stringify(itens)
-    );
+  /* ---------- CARRINHO ---------- */
+  static carregarCarrinho() {
+    return JSON.parse(localStorage.getItem("carrinho")) || [];
   }
 
-  static carregarCarrinho() {
-    return JSON.parse(
-      localStorage.getItem("carrinho")
-    ) || [];
+  static salvarCarrinho(carrinho) {
+    localStorage.setItem("carrinho", JSON.stringify(carrinho));
   }
 
   static limparCarrinho() {
