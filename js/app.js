@@ -87,8 +87,7 @@ links.forEach(link => {
 btnCadastrarProduto.addEventListener("click", () => {
   mostrarPagina("cadastro-produto");
 });
-
-// ================= FORMULÁRIO =================
+// -------- Formulário --------
 form.addEventListener("submit", (event) => {
   event.preventDefault();
 
@@ -117,6 +116,10 @@ form.addEventListener("submit", (event) => {
     StorageService.salvarProduto(produto);
     UIService.mostrarFeedback("Produto cadastrado!");
   }
+
+  form.reset();
+  mostrarPagina("produtos");
+});
 
 //Buscar
 function buscarProdutos() {
@@ -196,4 +199,7 @@ function atualizarCarrinhoUI() {
 // ================= UTIL =================
 function GerarID() {
   return Math.random().toString(36).slice(2, 11);
+
 }
+
+
