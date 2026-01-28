@@ -1,9 +1,10 @@
 export class Produto {
-  constructor(id, nome, preco) {
+  constructor(id, nome, preco, estoque = null) {
     this.id = id;
     this.nome = nome;
     this.preco = preco;
-    this.estoque = 10; // Cada produto tem por definição 10 no estoque (para testes)
+    this.estoque = estoque; 
+    // null = estoque ilimitado
   }
 
   validar() {
@@ -17,30 +18,25 @@ export class Produto {
       return false;
     }
 
+    if (
+      this.estoque != null &&
+      (this.estoque < 0 || !Number.isInteger(this.estoque))
+    ) {
+      alert("Estoque inválido");
+      return false;
+    }
+
     return true;
   }
-  
 
-  // Getters e Setters
+  // ---------- Getters ----------
+  getId() { return this.id; }
+  getNome() { return this.nome; }
+  getPreco() { return this.preco; }
+  getEstoque() { return this.estoque; }
 
-  getId() {
-    return this.id;
-  }
-
-  getNome() {
-    return this.nome;
-  }
-
-  getPreco() {
-    return this.preco;
-  }
-
-  setNome(nome) {
-    this.nome = nome;
-  }
-
-  setPreco(preco) {
-    this.preco = preco;
-  }
+  // ---------- Setters ----------
+  setNome(nome) { this.nome = nome; }
+  setPreco(preco) { this.preco = preco; }
+  setEstoque(estoque) { this.estoque = estoque; }
 }
-
