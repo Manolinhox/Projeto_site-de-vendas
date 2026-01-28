@@ -3,6 +3,7 @@ import { Produto } from "./models/Produto.js";
 import { Carrinho } from "./models/Carrinho.js";
 import { StorageService } from "./services/StorageService.js";
 import { UIService } from "./ui/UIService.js";
+import { Carrinho } from "./models/Carrinho.js";
 
 // -------------- DOM -----------
 const links = document.querySelectorAll("[data-page]");
@@ -106,9 +107,8 @@ links.forEach(link => {
 btnCadastrarProduto?.addEventListener("click", () => {
   mostrarPagina("cadastro-produto");
 });
-
-// ================= FORMULÁRIO =================
-form?.addEventListener("submit", (event) => {
+// -------- Formulário --------
+form.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const nome = document.getElementById("nomeProduto").value;
@@ -199,8 +199,34 @@ function atualizarCarrinhoUI() {
   UIService.renderizarCarrinho(itens);
   UIService.renderizarResumo(itens);
 }
-
+  
 // ================= UTIL =================
 function GerarID() {
   return Math.random().toString(36).slice(2, 11);
+
 }
+
+const produtos = StorageService.carregarProdutos();
+const carrinho_produto = new Carrinho(produtos);
+
+document.addEventListener("finalizarCompra", () => {
+  try {
+    carrinho.finalizarCompra();
+
+    UIService.mostrarMensagem(
+      "sucesso",
+      "Compra realizada com sucesso!"
+    );
+
+    UIService.renderizarProdutos(produtos);
+    UIService.renderizarCarrinho(carrinho);
+  } catch (erro) {
+    UIService.mostrarMensagem(
+      "erro",
+      erro.message
+    );
+  }
+});
+
+
+

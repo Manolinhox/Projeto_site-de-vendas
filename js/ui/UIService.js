@@ -3,7 +3,8 @@ export class UIService {
   // ================= PRODUTOS =================
   static renderizarProdutos(produtos = []) {
     const container = document.getElementById("lista-produtos");
-    if (!container) return;
+
+    if (!container) return; // <-- evita erro se a página não estiver ativa
 
     container.innerHTML = "";
 
@@ -111,5 +112,37 @@ export class UIService {
     document.body.appendChild(feedback);
 
     setTimeout(() => feedback.remove(), 2500);
+  }
+}
+
+export class UIService {
+  static renderizarResumoCarrinho(carrinho) {
+    const resumo = document.querySelector("#resumo-carrinho");
+
+    resumo.innerHTML = `
+      <p>Total de itens: ${carrinho.itens.length}</p>
+      <p><strong>Total: R$ ${carrinho.calcularTotal().toFixed(2)}</strong></p>
+      <button id="btn-finalizar">Finalizar Compra</button>
+    `;
+
+    document
+      .querySelector("#btn-finalizar")
+      .addEventListener("click", () => {
+        document.dispatchEvent(new Event("finalizarCompra"));
+      });
+
+  }
+  static mostrarMensagem(tipo, texto) {
+    const container = document.querySelector("#mensagens");
+
+    container.innerHTML = `
+      <div class="mensagem ${tipo}">
+        ${texto}
+      </div>
+    `;
+
+    setTimeout(() => {
+      container.innerHTML = "";
+    }, 3000);
   }
 }
