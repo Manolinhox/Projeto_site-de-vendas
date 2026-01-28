@@ -19,28 +19,5 @@ export class Produto {
 
     return true;
   }
-  
-
-  // Getters e Setters
-
-  getId() {
-    return this.id;
-  }
-
-  getNome() {
-    return this.nome;
-  }
-
-  getPreco() {
-    return this.preco;
-  }
-
-  setNome(nome) {
-    this.nome = nome;
-  }
-
-  setPreco(preco) {
-    this.preco = preco;
-  }
 }
 
