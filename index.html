@@ -88,18 +88,41 @@
 
       <!-- FORMULÁRIO -->
       <form id="form-produto">
+
+        <!-- IMAGEM -->
         <div class="form-group">
-          <label for="nomeProduto">Nome</label>
-          <input type="text" id="nomeProduto" required>
+          <label for="imagemProduto">Imagem do produto</label>
+          <input 
+            type="file" 
+            id="imagemProduto" 
+            accept="image/*"
+          >
         </div>
 
+        <!-- NOME -->
+        <div class="form-group">
+          <label for="nomeProduto">Nome</label>
+          <input 
+            type="text" 
+            id="nomeProduto" 
+            required
+          >
+        </div>
+
+        <!-- PREÇO -->
         <div class="form-group">
           <label for="precoProduto">Preço</label>
-          <input type="number" id="precoProduto" step="0.01" required>
+          <input 
+            type="number" 
+            id="precoProduto" 
+            step="0.01" 
+            required
+          >
         </div>
 
         <button type="submit">Cadastrar</button>
       </form>
+
     </section>
 
   </main>

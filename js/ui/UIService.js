@@ -3,8 +3,7 @@ export class UIService {
   // ================= PRODUTOS =================
   static renderizarProdutos(produtos = []) {
     const container = document.getElementById("lista-produtos");
-
-    if (!container) return; // <-- evita erro se a página não estiver ativa
+    if (!container) return;
 
     container.innerHTML = "";
 
@@ -17,7 +16,19 @@ export class UIService {
       const card = document.createElement("div");
       card.classList.add("produto-card");
 
+      const imagemHTML = produto.image
+        ? `<img 
+            src="${produto.image}" 
+            alt="${produto.nome}" 
+            class="produto-imagem"
+          >`
+        : `<div class="produto-imagem placeholder">
+            Sem imagem
+          </div>`;
+
       card.innerHTML = `
+        ${imagemHTML}
+
         <h3>${produto.nome}</h3>
         <p>Preço: R$ ${produto.preco.toFixed(2)}</p>
 
@@ -60,24 +71,24 @@ export class UIService {
       const div = document.createElement("div");
       div.classList.add("item-carrinho");
 
+      const imagemHTML = produto.image
+        ? `<img 
+            src="${produto.image}" 
+            alt="${produto.nome}" 
+            class="carrinho-imagem"
+          >`
+        : "";
+
       div.innerHTML = `
+        ${imagemHTML}
+
         <h4>${produto.nome}</h4>
         <p>Preço unitário: R$ ${produto.preco.toFixed(2)}</p>
 
         <div class="controle-qtd">
-          <button 
-            data-action="diminuir" 
-            data-id="${produto.id}">
-            −
-          </button>
-
+          <button data-action="diminuir" data-id="${produto.id}">−</button>
           <span>${quantidade}</span>
-
-          <button 
-            data-action="aumentar" 
-            data-id="${produto.id}">
-            +
-          </button>
+          <button data-action="aumentar" data-id="${produto.id}">+</button>
         </div>
 
         <p class="subtotal">

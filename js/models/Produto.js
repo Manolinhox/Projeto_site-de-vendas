@@ -1,12 +1,13 @@
 export class Produto {
-  constructor(id, nome, preco, estoque = null) {
+  constructor(id, nome, preco, estoque = null, image = null) {
     this.id = id;
     this.nome = nome;
     this.preco = preco;
-    this.estoque = estoque; 
-    // null = estoque ilimitado
+    this.estoque = estoque; // null = estoque ilimitado
+    this.image = image;     // Base64 (string) ou null
   }
 
+  // ================= VALIDAÇÃO =================
   validar() {
     if (!this.nome || this.nome.trim() === "") {
       alert("Nome do produto inválido");
@@ -26,17 +27,24 @@ export class Produto {
       return false;
     }
 
+    if (this.image && typeof this.image !== "string") {
+      alert("Imagem inválida");
+      return false;
+    }
+
     return true;
   }
 
-  // ---------- Getters ----------
+  // ================= GETTERS =================
   getId() { return this.id; }
   getNome() { return this.nome; }
   getPreco() { return this.preco; }
   getEstoque() { return this.estoque; }
+  getImage() { return this.image; }
 
-  // ---------- Setters ----------
+  // ================= SETTERS =================
   setNome(nome) { this.nome = nome; }
   setPreco(preco) { this.preco = preco; }
   setEstoque(estoque) { this.estoque = estoque; }
+  setImage(image) { this.image = image; }
 }

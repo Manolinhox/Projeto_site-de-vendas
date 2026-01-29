@@ -13,6 +13,8 @@ const inputBusca = document.getElementById("busca-produto");
 const btnFinalizarCompra = document.querySelector(".btn-finalizar");
 const contadorCarrinho = document.getElementById("count-itens");
 
+const inputImagem = document.getElementById("imagemProduto");
+
 // -------------- Estado -----------
 let produtoEmEdicao = null;
 let estadoProdutos = [];
@@ -45,11 +47,13 @@ document.addEventListener("click", (event) => {
       dados.id,
       dados.nome,
       dados.preco,
-      dados.estoque
+      dados.estoque,
+      dados.image || null
     );
 
     document.getElementById("nomeProduto").value = produtoEmEdicao.nome;
     document.getElementById("precoProduto").value = produtoEmEdicao.preco;
+    inputImagem.value = "";
 
     mostrarPagina("cadastro-produto");
   }
@@ -106,20 +110,32 @@ links.forEach(link => {
   });
 });
 
-btnCadastrarProduto?.addEventListener("click", () => {
+btnCadastrarProduto.addEventListener("click", () => {
   mostrarPagina("cadastro-produto");
 });
-// -------- Formulário --------
-form.addEventListener("submit", (event) => {
+
+// ================= FORMULÁRIO =================
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const nome = document.getElementById("nomeProduto").value;
   const preco = parseFloat(document.getElementById("precoProduto").value);
+  const arquivoImagem = inputImagem.files[0] || null;
+
+  let imagemBase64 = null;
+
+  if (arquivoImagem) {
+    imagemBase64 = await converterParaBase64(arquivoImagem);
+  }
 
   // ----- EDIÇÃO -----
   if (produtoEmEdicao) {
-    produtoEmEdicao.nome = nome;
-    produtoEmEdicao.preco = preco;
+    produtoEmEdicao.setNome(nome);
+    produtoEmEdicao.setPreco(preco);
+
+    if (imagemBase64) {
+      produtoEmEdicao.setImage(imagemBase64);
+    }
 
     if (!produtoEmEdicao.validar()) return;
 
@@ -130,7 +146,13 @@ form.addEventListener("submit", (event) => {
 
   // ----- NOVO PRODUTO -----
   else {
-    const produto = new Produto(GerarID(), nome, preco, 10);
+    const produto = new Produto(
+      GerarID(),
+      nome,
+      preco,
+      10,
+      imagemBase64
+    );
 
     if (!produto.validar()) return;
 
@@ -143,7 +165,7 @@ form.addEventListener("submit", (event) => {
 });
 
 // ================= BUSCA =================
-inputBusca?.addEventListener("input", () => {
+inputBusca.addEventListener("input", () => {
   const termo = inputBusca.value.toLowerCase();
 
   const filtrados = estadoProdutos.filter(produto =>
@@ -154,7 +176,7 @@ inputBusca?.addEventListener("input", () => {
 });
 
 // ================= FINALIZAR COMPRA =================
-btnFinalizarCompra?.addEventListener("click", finalizarCompra);
+btnFinalizarCompra.addEventListener("click", finalizarCompra);
 
 function finalizarCompra() {
   const itensCarrinho = carrinho.getItens();
@@ -201,34 +223,17 @@ function atualizarCarrinhoUI() {
   UIService.renderizarCarrinho(itens);
   UIService.renderizarResumo(itens);
 }
-  
+
 // ================= UTIL =================
 function GerarID() {
   return Math.random().toString(36).slice(2, 11);
-
 }
 
-const produtos = StorageService.carregarProdutos();
-const carrinho_produto = new Carrinho(produtos);
-
-document.addEventListener("finalizarCompra", () => {
-  try {
-    carrinho.finalizarCompra();
-
-    UIService.mostrarMensagem(
-      "sucesso",
-      "Compra realizada com sucesso!"
-    );
-
-    UIService.renderizarProdutos(produtos);
-    UIService.renderizarCarrinho(carrinho);
-  } catch (erro) {
-    UIService.mostrarMensagem(
-      "erro",
-      erro.message
-    );
-  }
-});
-
-
-
+function converterParaBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
