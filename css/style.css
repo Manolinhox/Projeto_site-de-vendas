@@ -16,9 +16,10 @@ body {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   align-items: center;
+  
 
   padding: 1rem 2rem;
-  background-color: #222;
+  background-color: grey;
   color: #fff;
 }
 
@@ -53,6 +54,7 @@ body {
   padding: 0.5rem 1rem;
   cursor: pointer;
   font-weight: bold;
+  border-radius: 30px;
 }
 
 .cart-count {
@@ -231,4 +233,18 @@ button {
   color: #721c24;
 }
 
+.logo {
+  width: 100%;      /* imagem ocupa a largura da div */
+  height: 100%;     /* imagem ocupa a altura da div */
+  object-fit: contain; /* mantém proporção */
 
+}
+
+
+
+.header-left img {
+  width: 100px;               
+  height: auto;
+  max-height: 100%;   
+       
+} 
