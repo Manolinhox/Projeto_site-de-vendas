@@ -11,7 +11,6 @@ const form = document.getElementById("form-produto");
 const btnCadastrarProduto = document.getElementById("btnCadastrarProduto");
 const inputBusca = document.getElementById("busca-produto");
 const btnFinalizarCompra = document.querySelector(".btn-finalizar");
-const contadorCarrinho = document.getElementById("count-itens");
 
 // -------------- Estado -----------
 let produtoEmEdicao = null;
@@ -83,7 +82,6 @@ document.addEventListener("click", (event) => {
     atualizarCarrinhoUI();
   }
 
-  contadorCarrinho.innerHTML = carrinho.getTotalItens();
 });
 
 // ================= NAVEGAÇÃO =================
