@@ -248,3 +248,10 @@ button {
   max-height: 100%;   
        
 } 
+
+#lista-produtos {
+  display: flex;
+  flex-wrap: wrap;        /* quebra linha quando não cabe */
+  gap: 20px;              /* espaço entre os blocos */
+  margin-top: 20px;
+}
