@@ -234,8 +234,8 @@ button {
 }
 
 .logo {
-  width: 100%;      /* imagem ocupa a largura da div */
-  height: 100%;     /* imagem ocupa a altura da div */
+  width: 50%;      /* imagem ocupa a largura da div */
+  height: 50%;     /* imagem ocupa a altura da div */
   object-fit: contain; /* mantém proporção */
 
 }
@@ -243,15 +243,8 @@ button {
 
 
 .header-left img {
-  width: 100px;               
+  width: 150px;               
   height: auto;
   max-height: 100%;   
        
 } 
-
-#lista-produtos {
-  display: flex;
-  flex-wrap: wrap;        /* quebra linha quando não cabe */
-  gap: 20px;              /* espaço entre os blocos */
-  margin-top: 20px;
-}
